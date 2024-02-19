@@ -1,0 +1,245 @@
+PostMan ==>PostMapping —> Create
+=======
+Click —>Post —>http://@localhost:8080/create
+  cvv      b
+Click —> body—>raw—>Json—>write as Json Format(RequestBody)—>SEND
+
+Notes 
+———
+
+Json Object 
+=========
+Request Body{
+
+  "name":"Elakkiya",
+  "id":2134,
+  "address":{
+    "place":"Chennai",
+    "pincode": 697000
+  }
+}
+
+Response Body{
+    "name": "Elakkiya",
+    "id": 2134,
+    "address": {
+        "place": "Chennai",
+        "pincode": 697000  
+    }
+}
+
+
+Json Array 
+========
+Request Body{
+  "name":"Elakkiya",
+  "id":2134,
+  "hotelNames":[
+    "ITC","FloraINN","Park"
+  ]
+}
+Response Body{
+    "empName": "Elakkiya",
+    "empId": 2134,
+    "hotelNames": [
+        "ITC",
+        "FloraINN",
+        "Park"
+    ]
+}
+
+
+
+Nested  Json Array + Object
+=======================
+Request Body{
+  "empName":"Elakkiya",
+  "empId":2134,
+  "empDetails":[
+    {
+        "hotelName":"ITC",
+        "roomType":"Suite",
+        "place":"Chennai"
+    },
+    {
+        "hotelName":"ParkInn",
+        "roomType":"Deluxe",
+        "place":"Bangalore"
+    },
+    {
+        "hotelName":"NovoHotel",
+        "roomType":"Suite",
+        "place":"Covai"
+    }
+  ]
+}
+
+
+Response Body{
+
+    "empName": "Elakkiya",
+    "empId": 2134,
+    "empDetails": [
+        {
+            "hotelName": "ITC",
+            "roomType": "Suite",
+            "place": "Chennai"
+        },
+        {
+            "hotelName": "ParkInn",
+            "roomType": "Deluxe",
+            "place": "Bangalore"
+        },
+        {
+            "hotelName": "NovoHotel",
+            "roomType": "Suite",
+            "place": "Covai"
+        }
+    ]
+}
+
+
+
+
+Programs
+========
+
+Json Object 
+——————
+Model Class
+———————
+package com.omrbranch.all.model;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+@Data
+@AllArgsConstructor
+public class CreateReq {
+	private String name;
+	private int id;
+	private Address address;
+}
+package com.omrbranch.all.model;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+@Data
+@AllArgsConstructor
+public class Address {
+	private String place;
+	private int pincode;
+}
+
+Service
+————
+package com.omrbranch.all.service;
+import org.springframework.stereotype.Service;
+import com.omrbranch.all.model.CreateReq;
+@Service
+public interface HotelService {
+//	 Json Object
+	 CreateReq createHotel2(CreateReq req);
+}
+
+ServiceImpl
+——————
+package com.omrbranch.all.serviceimpl;
+import org.springframework.stereotype.Component;
+import com.omrbranch.all.model.CreateReq;
+@Component
+public class HotelServiceImpl implements HotelService {
+//	Return Req Body --> Json Object
+	@Override
+	public CreateReq createHotel2(CreateReq req) {
+		return req;	}
+}
+
+Controller
+——————
+package com.omrbranch.all.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import com.omrbranch.all.model.CreateReq;
+@RestController
+public class HotelController {
+	@Autowired
+	HotelServiceImpl impl;
+
+//	PostMan-->http://@localhost:8080/createreq
+//	Return REquest Body —> Json Object
+	@PostMapping(value = "/createreq")
+	public CreateReq createHotelInn(@RequestBody  CreateReq req) {
+		CreateReq hotel2 = impl.createHotel2(req);
+		return hotel2;
+	}
+}
+
+
+
+
+
+
+
+
+Json - Array
+———————
+Model Class
+———————
+package com.omrbranch.all.model;
+import java.util.ArrayList;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+@Data
+@AllArgsConstructor
+public class CreateReq2 {
+	private String empName;
+	private int empId;
+	private ArrayList<String> hotelNames;
+}
+Service
+————
+package com.omrbranch.all.service;
+import org.springframework.stereotype.Service;
+import com.omrbranch.all.model.CreateReq2;
+@Service
+public interface HotelService {
+// Json Array
+	 CreateReq2 createHotel3(CreateReq2 req2);
+
+ServiceImpl
+——————
+package com.omrbranch.all.serviceimpl;
+import org.springframework.stereotype.Component;
+import com.omrbranch.all.model.CreateReq2;
+@Component
+public class HotelServiceImpl implements HotelService {
+//	Return Req2 Body --> Json Array
+	@Override
+	public CreateReq2 createHotel3(CreateReq2 req2) {
+		return req2;
+	}
+
+Controller
+——————
+package com.omrbranch.all.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import com.omrbranch.all.model.CreateReq2;
+@RestController
+public class HotelController {
+	@Autowired
+	HotelServiceImpl impl;
+
+	
+//	PostMan-->http://@localhost:8080/ch
+//	Return REquest Body - Json Array
+	@PostMapping(value = "/ch")
+	public CreateReq2 createHotelInfo2(@RequestBody  CreateReq2 req2) {
+		CreateReq2 hotel3 = impl.createHotel3(req2);
+		return hotel3;
+	}
+}
